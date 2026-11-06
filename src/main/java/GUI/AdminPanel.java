@@ -1,8 +1,9 @@
+package GUI;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
-package com.oop.act2;
 
 /**
  *
@@ -66,18 +67,15 @@ public class AdminPanel extends javax.swing.JPanel {
      if (window instanceof javax.swing.JFrame) {
          javax.swing.JFrame mainFrame = (javax.swing.JFrame) window;
 
-         // 2. Buat objek LoginPanel baru untuk ditampilkan kembali
-         LoginPanel panelLogin = new LoginPanel(); // Sesuaikan dengan nama class panel login Anda
+         
+         LoginPanel panelLogin = new LoginPanel(); 
 
-         // 3. Bersihkan isi MainFrame dan masukkan kembali panel login
          mainFrame.getContentPane().removeAll();
          mainFrame.getContentPane().add(panelLogin);
-
-         // 4. Sesuaikan ukuran jendela dengan panel login dan posisikan ke tengah layar
+      
          mainFrame.pack(); 
          mainFrame.setLocationRelativeTo(null); 
 
-         // 5. Segarkan tampilan layar agar perubahan langsung terlihat
          mainFrame.revalidate();
          mainFrame.repaint();
      }
