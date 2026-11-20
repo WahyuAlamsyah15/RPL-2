@@ -23,9 +23,11 @@ public class AppConfig {
     public DataSource dataSource() {
         HikariDataSource ds = new HikariDataSource();
         ds.setDriverClassName("com.mysql.cj.jdbc.Driver");
-        ds.setJdbcUrl("jdbc:mysql://localhost:3306/rpl");
-        ds.setUsername("root");
-        ds.setPassword("");
+        // Dapat dioverride saat menjalankan aplikasi tanpa mengubah source code:
+        // DB_URL, DB_USERNAME, DB_PASSWORD.
+        ds.setJdbcUrl(env("DB_URL", "jdbc:mysql://localhost:3306/rpl"));
+        ds.setUsername(env("DB_USERNAME", "root"));
+        ds.setPassword(env("DB_PASSWORD", ""));
         return ds;
     }
 
@@ -37,11 +39,17 @@ public class AppConfig {
 
         Properties props = new Properties();
         props.put("hibernate.hbm2ddl.auto", "update");
+        props.put("hibernate.dialect", "org.hibernate.dialect.MySQLDialect");
         props.put("hibernate.show_sql", "false");
         props.put("hibernate.format_sql", "true");
         factoryBean.setHibernateProperties(props);
 
         return factoryBean;
+    }
+
+    private static String env(String name, String fallback) {
+        String value = System.getenv(name);
+        return value == null || value.isBlank() ? fallback : value;
     }
 
     @Bean

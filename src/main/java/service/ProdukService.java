@@ -111,4 +111,55 @@ public class ProdukService {
     public List<Produk> findAll() {
         return produkDao.findAll();
     }
+
+    @Transactional
+    public Produk create(String nama, int harga, int jumlah) {
+        validate(nama, harga, jumlah);
+        Produk produk = new Produk(nama.trim(), harga, jumlah);
+        produkDao.save(produk);
+        return produk;
+    }
+
+    @Transactional
+    public Produk update(Integer id, String nama, int harga, int jumlah) {
+        validate(nama, harga, jumlah);
+        Produk produk = produkDao.findById(id);
+        if (produk == null) {
+            throw new IllegalArgumentException("Produk tidak ditemukan.");
+        }
+        produk.setName(nama.trim());
+        produk.setHarga(harga);
+        produk.setJumlah(jumlah);
+        return produkDao.update(produk);
+    }
+
+    @Transactional
+    public Produk tambahStok(Integer id, int tambahanJumlah) {
+        if (tambahanJumlah <= 0) {
+            throw new IllegalArgumentException("Jumlah stok yang ditambahkan harus lebih dari 0.");
+        }
+        Produk produk = produkDao.findById(id);
+        if (produk == null) {
+            throw new IllegalArgumentException("Produk tidak ditemukan.");
+        }
+        produk.setJumlah(produk.getJumlah() + tambahanJumlah);
+        return produkDao.update(produk);
+    }
+
+    @Transactional
+    public void delete(Integer id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Produk tidak valid.");
+        }
+        produkDao.deleteById(id);
+    }
+
+    private void validate(String nama, int harga, int jumlah) {
+        if (nama == null || nama.isBlank()) {
+            throw new IllegalArgumentException("Nama produk wajib diisi.");
+        }
+        if (harga < 0 || jumlah < 0) {
+            throw new IllegalArgumentException("Harga dan jumlah tidak boleh negatif.");
+        }
+    }
 }

@@ -26,7 +26,6 @@
     </dependencyManagement>
     
     <dependencies>
-        <!-- Spring Core & DAO / ORM Support -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context</artifactId>
@@ -63,6 +62,13 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>6.2.1</version>
+        </dependency>
+
+        <!-- Reporting desktop; template JRXML berada di src/main/resources/report -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.21.3</version>
         </dependency>
     </dependencies>
 

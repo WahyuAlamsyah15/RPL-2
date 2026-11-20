@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
+              name="laporan_gabungan" pageWidth="595" pageHeight="842" columnWidth="515"
+              leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40">
+
+    <subDataset name="BahanBakuDataset">
+        <field name="id" class="java.lang.Integer"/>
+        <field name="name" class="java.lang.String"/>
+        <field name="satuan" class="java.lang.String"/>
+        <field name="hargaBeli" class="java.lang.Integer"/>
+        <field name="jumlah" class="java.lang.Integer"/>
+        <field name="stokMinimum" class="java.lang.Integer"/>
+    </subDataset>
+
+    <subDataset name="PesananDataset">
+        <field name="id" class="java.lang.Integer"/>
+        <field name="namaPelanggan" class="java.lang.String"/>
+        <field name="produk" class="java.lang.String"/>
+        <field name="jumlah" class="java.lang.Integer"/>
+        <field name="totalHarga" class="java.lang.Integer"/>
+        <field name="tanggalPesanan" class="java.time.LocalDate"/>
+    </subDataset>
+
+    <parameter name="DATASET_BAHAN_BAKU" class="net.sf.jasperreports.engine.JRDataSource"/>
+    <parameter name="DATASET_PESANAN" class="net.sf.jasperreports.engine.JRDataSource"/>
+
+    <title>
+        <band height="55">
+            <staticText>
+                <reportElement x="0" y="0" width="515" height="30"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="20" isBold="true"/>
+                </textElement>
+                <text><![CDATA[Laporan Bahan Baku & Pesanan TokoKue]]></text>
+            </staticText>
+            <textField pattern="dd MMMM yyyy">
+                <reportElement x="0" y="32" width="250" height="18"/>
+                <textElement verticalAlignment="Middle"/>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+            </textField>
+        </band>
+    </title>
+
+    <detail>
+        <band height="320" splitType="Stretch">
+
+            <!-- ==================== BAGIAN 1: BAHAN BAKU ==================== -->
+            <staticText>
+                <reportElement positionType="Float" x="0" y="5" width="515" height="22"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="13" isBold="true"/>
+                </textElement>
+                <text><![CDATA[1. Daftar Bahan Baku]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="0" y="30" width="35" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[ID]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="35" y="30" width="160" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Nama Bahan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="195" y="30" width="65" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Satuan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="260" y="30" width="105" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Harga Beli]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="365" y="30" width="75" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Stok]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="440" y="30" width="75" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Stok Min]]></text>
+            </staticText>
+
+            <componentElement>
+                <reportElement positionType="Float" x="0" y="58" width="515" height="25"/>
+                <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                         xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd"
+                         printOrder="Vertical">
+                    <datasetRun subDataset="BahanBakuDataset">
+                        <dataSourceExpression><![CDATA[$P{DATASET_BAHAN_BAKU}]]></dataSourceExpression>
+                    </datasetRun>
+                    <jr:listContents height="25" width="515">
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="0" y="0" width="35" height="25"/>
+                            <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+                        </textField>
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="35" y="0" width="160" height="25"/>
+                            <textElement verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+                        </textField>
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="195" y="0" width="65" height="25"/>
+                            <textElement verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{satuan}]]></textFieldExpression>
+                        </textField>
+                        <textField pattern="Rp #,##0" isBlankWhenNull="true">
+                            <reportElement x="260" y="0" width="105" height="25"/>
+                            <textElement verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{hargaBeli}]]></textFieldExpression>
+                        </textField>
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="365" y="0" width="75" height="25"/>
+                            <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{jumlah}]]></textFieldExpression>
+                        </textField>
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="440" y="0" width="75" height="25"/>
+                            <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{stokMinimum}]]></textFieldExpression>
+                        </textField>
+                    </jr:listContents>
+                </jr:list>
+            </componentElement>
+
+            <!-- ==================== BAGIAN 2: PESANAN ==================== -->
+            <staticText>
+                <reportElement positionType="Float" x="0" y="98" width="515" height="22"/>
+                <textElement verticalAlignment="Middle">
+                    <font size="13" isBold="true"/>
+                </textElement>
+                <text><![CDATA[2. Daftar Pesanan]]></text>
+            </staticText>
+
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="0" y="123" width="35" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[ID]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="35" y="123" width="120" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Pelanggan]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="155" y="123" width="130" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Produk]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="285" y="123" width="50" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Jml]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="335" y="123" width="100" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Total Harga]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" mode="Opaque" x="435" y="123" width="80" height="28" forecolor="#FFFFFF" backcolor="#745BCD"/>
+                <textElement verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[Tanggal]]></text>
+            </staticText>
+
+            <componentElement>
+                <reportElement positionType="Float" x="0" y="151" width="515" height="25"/>
+                <jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                         xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd"
+                         printOrder="Vertical">
+                    <datasetRun subDataset="PesananDataset">
+                        <dataSourceExpression><![CDATA[$P{DATASET_PESANAN}]]></dataSourceExpression>
+                    </datasetRun>
+                    <jr:listContents height="25" width="515">
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="0" y="0" width="35" height="25"/>
+                            <textElement textAlignment="Center" verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+                        </textField>
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="35" y="0" width="120" height="25"/>
+                            <textElement verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{namaPelanggan}]]></textFieldExpression>
+                        </textField>
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="155" y="0" width="130" height="25"/>
+                            <textElement verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{produk}]]></textFieldExpression>
+                        </textField>
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="285" y="0" width="50" height="25"/>
+                            <textElement textAlignment="Right" verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{jumlah}]]></textFieldExpression>
+                        </textField>
+                        <textField pattern="Rp #,##0" isBlankWhenNull="true">
+                            <reportElement x="335" y="0" width="100" height="25"/>
+                            <textElement verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{totalHarga}]]></textFieldExpression>
+                        </textField>
+                        <textField isBlankWhenNull="true">
+                            <reportElement x="435" y="0" width="80" height="25"/>
+                            <textElement verticalAlignment="Middle"/>
+                            <textFieldExpression><![CDATA[$F{tanggalPesanan} != null ? $F{tanggalPesanan}.toString() : ""]]></textFieldExpression>
+                        </textField>
+                    </jr:listContents>
+                </jr:list>
+            </componentElement>
+
+        </band>
+    </detail>
+</jasperReport>
