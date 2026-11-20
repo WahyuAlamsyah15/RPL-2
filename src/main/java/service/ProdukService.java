@@ -1,92 +1,114 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package service;
 
-/**
- *
- * @author user
- */
-
+import dao.ProdukDao;
 import entity.Produk;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
+
+@Service
 public class ProdukService {
-    
-    public Produk add(Scanner scan){
-        
-        
+
+    private final ProdukDao produkDao;
+
+    public ProdukService(ProdukDao produkDao) {
+        this.produkDao = produkDao;
+    }
+
+    @Transactional
+    public Produk add(Scanner scan) {
         System.out.println("INPUT DATA PRODUK");
         System.out.print("Masukkan nama produk : ");
-        String nama = scan.nextLine();
-        
+        String nama = scan.nextLine().trim();
+
         System.out.print("Masukkan harga produk : ");
         int harga = scan.nextInt();
-        
+
         System.out.print("Masukkan jumlah produk : ");
         int jumlah = scan.nextInt();
-        
+        scan.nextLine(); // Membersihkan sisa newline di buffer Scanner
+
+        if (nama.isBlank()) {
+            throw new IllegalArgumentException("Nama produk wajib diisi.");
+        }
+        if (harga < 0 || jumlah < 0) {
+            throw new IllegalArgumentException("Harga dan jumlah tidak boleh negatif.");
+        }
+
         Produk produk = new Produk();
         produk.setName(nama);
         produk.setHarga(harga);
         produk.setJumlah(jumlah);
-        
-        System.out.println("Produk berhasil ditambahkan");
+
+        produkDao.save(produk);
+        System.out.println("Produk berhasil ditambahkan ke database.");
         return produk;
     }
-    
-     public void tampil(List<Produk> daftarProduk) {
+
+    @Transactional(readOnly = true)
+    public void tampil() {
+        List<Produk> daftarProduk = produkDao.findAll();
+
         System.out.println("=== DAFTAR PRODUK ===");
         if (daftarProduk.isEmpty()) {
-            System.out.println("[ List masih kosong! Belum ada data ]");
+            System.out.println("[ Data masih kosong! Belum ada data di database ]");
         } else {
             for (Produk p : daftarProduk) {
+                System.out.println("ID     : " + p.getId());
                 System.out.println("Nama   : " + p.getName());
                 System.out.println("Harga  : " + p.getHarga());
                 System.out.println("Jumlah : " + p.getJumlah());
                 System.out.println("--------------------");
             }
         }
-        System.out.println(); 
+        System.out.println();
     }
-     
-    public void kurangiStok(List<Produk> daftarProduk, Scanner input) {
+
+    @Transactional
+    public void kurangiStok(Scanner input) {
         System.out.println("=== STOK DATA KELUAR ===");
+        List<Produk> daftarProduk = produkDao.findAll();
+
         if (daftarProduk.isEmpty()) {
-            System.out.println("[ Gagal: List masih kosong! ]\n");
+            System.out.println("[ Gagal: Data produk masih kosong! ]\n");
             return;
         }
 
         System.out.print("Masukkan Nama Produk yang keluar: ");
-        String namaCari = input.nextLine();
+        String namaCari = input.nextLine().trim();
 
-        boolean ditemukan = false;
+        Optional<Produk> produkOpt = produkDao.findByName(namaCari);
 
-        for (Produk p : daftarProduk) {
-            
-            if (p.getName().equalsIgnoreCase(namaCari)) {
-                ditemukan = true;
-                
-                System.out.print("Masukkan Jumlah Keluar: ");
-                int jumlahKeluar = input.nextInt();
-                input.nextLine(); 
-
-                
-                if (jumlahKeluar <= p.getJumlah()) {
-                    
-                    int stokBaru = p.getJumlah() - jumlahKeluar;
-                    p.setJumlah(stokBaru);
-                    System.out.println("Berhasil! Stok " + p.getName() + " berkurang. Sisa stok: " + stokBaru + "\n");
-                } else {
-                    System.out.println("Gagal! Jumlah keluar melebihi stok yang ada (Stok saat ini: " + p.getJumlah() + ")\n");
-                }
-                break; 
-            }
-        }
-
-        if (!ditemukan) {
+        if (produkOpt.isEmpty()) {
             System.out.println("Gagal! Produk dengan nama '" + namaCari + "' tidak ditemukan.\n");
+            return;
         }
+
+        Produk p = produkOpt.get();
+        System.out.print("Masukkan Jumlah Keluar: ");
+        int jumlahKeluar = input.nextInt();
+        input.nextLine(); // Membersihkan sisa newline
+
+        if (jumlahKeluar <= 0) {
+            System.out.println("Gagal! Jumlah keluar harus lebih dari 0.\n");
+            return;
+        }
+
+        if (jumlahKeluar <= p.getJumlah()) {
+            int stokBaru = p.getJumlah() - jumlahKeluar;
+            p.setJumlah(stokBaru);
+            produkDao.update(p);
+            System.out.println("Berhasil! Stok " + p.getName() + " berkurang. Sisa stok: " + stokBaru + "\n");
+        } else {
+            System.out.println("Gagal! Jumlah keluar melebihi stok yang ada (Stok saat ini: " + p.getJumlah() + ")\n");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Produk> findAll() {
+        return produkDao.findAll();
     }
 }
